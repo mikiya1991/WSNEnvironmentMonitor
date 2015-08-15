@@ -1,0 +1,3 @@
+@echo off
+::"<ToolsPath>\WsnMakePkg.exe" -v 0x<version> -p  0x<pid> -s "Description - shows up in MAX" -m WSN-xxxx.mis "My Application.image" "My Application.pkg"
+"D:\Program Files\National Instruments\LabVIEW 2012\Targets\NI\Embedded\WSN\FwBuilders\WsnMakePkg.exe" -v 0x00000002 -p  0x73DB -s "Version 1.3.0 Firmware" -m "E:\大学文档\大四下\毕设\wsn-project-fin\wsn-project-fin\VISN-WSN\Node1\My Application\WSN-3202.raw" "E:\大学文档\大四下\毕设\wsn-project-fin\wsn-project-fin\VISN-WSN\Node1\My Application\My Application.image" "E:\大学文档\大四下\毕设\wsn-project-fin\wsn-project-fin\VISN-WSN\Node1\My Application\My Application.pkg"

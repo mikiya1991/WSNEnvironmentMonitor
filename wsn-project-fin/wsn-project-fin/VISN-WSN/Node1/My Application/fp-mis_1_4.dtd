@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+        DTD for MIS version 0x30 and higher.
+-->
+
+<!--
+    An unsigned 8-bit integer 0-255.
+
+    Also can be specified as hex by prefixing with "0x"
+-->
+<!ENTITY % Uint8 "CDATA">
+
+<!--
+    An unsigned, 16-bit integer 0-65535
+
+    Also can be specified as hex by prefixing with "0x"
+-->
+<!ENTITY % Uint16 "CDATA">
+
+<!--
+    Channel type:
+
+    ai - Analog Input
+    ao - Analog Output
+    di - Digital Input
+    do - Digital Output
+    ci - Counter Input
+    co - Counter Output
+    -->
+<!ENTITY % ChanType "(ai|ao|di|do|ci|co|wfi|wfo|wii|wio|si|so)">
+
+<!--
+    Data type for attributes (enumerated or numerical)
+    -->
+<!ENTITY % DataType "(enum|u8|i8|u16|i16|u32|i32|f32)">
+
+<!--
+    Format for an integer.
+
+    unsigned - unsigned int
+    signed - 2's complement signed
+    -->
+<!ENTITY % IntFormat "(unsigned|signed)">
+
+<!--
+   LV Property Type
+
+   none - None
+   config - Config data
+   channel - Channel data
+   -->
+<!ENTITY % LVPropType "(none|config|channel)">
+
+<!--
+   Node Architecture
+
+   none - Not a node
+   scrimmage - 3202, 3212
+   peewee - 3226, etc
+   varsity - 3214, etc
+   -->
+<!ENTITY % NodeArchitecture "(none|scrimmage|peewee|varsity)">
+
+   <!--
+    The top-level element for the MIS.  Attributes:
+
+    version   An 8-bit version number for the MIS.
+              Currently only 1 is supported.
+
+    module-id The 16-bit unique ID for the module.
+
+    hotswap-id The hot swap ID for the module, which is common
+              between all modules that are register-compatible with
+              this one
+
+    semaphore-time semaphore request time, in microseconds,
+              for this module.
+
+    architecture product family for the node
+
+    Sub-elements:
+
+    name      Name of the module
+
+    cis       One or more channel information sheets on the module's
+              channels.
+-->
+<!ELEMENT mis (name, cis*)>
+<!ATTLIST mis version %Uint8; #REQUIRED>
+<!ATTLIST mis module-id %Uint16; #REQUIRED>
+<!ATTLIST mis hotswap-id %Uint8; #REQUIRED>
+<!ATTLIST mis semaphore-time %Uint8; #REQUIRED>
+<!ATTLIST mis architecture %NodeArchitecture; #REQUIRED>
+<!--
+    String name used for any of the entities in the MIS.
+    -->
+<!ELEMENT name (#PCDATA)>
+
+<!ELEMENT depth (#PCDATA)>
+<!ELEMENT relaxedTimeStamp (#PCDATA)>
+
+<!--
+    Channel Information Sheet.  The information describing a
+    group of like channels.  Attributes:
+
+    reps        Number of logical channels described by
+                this CIS.
+
+    type        Type of channel
+
+    points      Number of points (physical channels) per
+                logical channel.
+
+   lvprop      Type of LabVIEW property
+    -->
+<!ELEMENT cis (name, depth?, relaxedTimeStamp?, error*, range*, attr*, cmd*)>
+<!ATTLIST cis id %Uint16; #REQUIRED>
+<!ATTLIST cis reps %Uint8; #REQUIRED>
+<!ATTLIST cis type %ChanType; #REQUIRED>
+<!ATTLIST cis points %Uint8; #REQUIRED>
+<!ATTLIST cis lvprop %LVPropType; #IMPLIED>
+
+<!--
+    Channel error description.  Attributes:
+
+    id           Unique 8-bit ID for this error.
+    -->
+<!ELEMENT error (name)>
+<!ATTLIST error id %Uint8; #REQUIRED>
+
+<!--
+    Element describing a channel range.  Attributes are:
+
+    id          8-bit unique ID for the range
+    unit        8-bit ID for the units of this range
+                (see the CIS ID allocation document).
+
+    Sub elements:
+    low         Lower bound of the range in scaled units.
+
+    high        Upper bound of the range in scaled units.
+
+    default     Default value in raw counts.
+
+    raw         Format of the raw value (unsigned is the default).
+
+    type        Describes the size and format of the data.
+    -->
+<!ELEMENT range (low, high, default?)>
+<!ATTLIST range id %Uint8; #REQUIRED>
+<!ATTLIST range unit %Uint8; #REQUIRED>
+<!ATTLIST range raw %IntFormat; #IMPLIED>
+<!ATTLIST range type %DataType; #REQUIRED>
+
+<!--
+    Lower bound of the range.  Attributes:
+
+    -->
+<!ELEMENT low (#PCDATA)>
+
+<!--
+    Upper bound of the range.  Attributes:
+
+    -->
+<!ELEMENT high (#PCDATA)>
+
+<!--
+    Default value for the range or attr/command.
+
+    -->
+<!ELEMENT default (#PCDATA)>
+
+<!--
+    Attribute element.
+
+    type        Describes the size and format of the data.
+    id          Unique 8-bit ID for the attribute.
+
+    length      Length, in bytes, of a multi-byte attribute.
+                This only needs to be specified if this attribute
+                is the first byte of a multi-byte attribute.
+                May be omitted for single-byte attributes or
+                subsequent bytes of multi-byte attributes.
+-->
+<!ELEMENT attr (name, ((low, high) | enum), default)>
+<!ATTLIST attr type %DataType; #REQUIRED>
+<!ATTLIST attr id %Uint8; #REQUIRED>
+<!ATTLIST attr length %Uint8; #IMPLIED>
+
+<!--
+    Minimum value for this attribute/command as
+    an 8-bit integer.  Prefixing with "0x"
+    will cause it to be interpreted as hex
+    -->
+<!ELEMENT min (#PCDATA)>
+
+<!--
+    Maximum value for this attribute/command as
+    an 8-bit integer.  Prefixing with "0x"
+    will cause it to be interpreted as hex
+    -->
+<!ELEMENT max (#PCDATA)>
+
+<!--
+    Collection of enumerated elements in an
+    enumerated command or attribute.
+    -->
+<!ELEMENT enum (enum-element*)>
+
+<!--
+    Element of an enumerated command or attribute.
+
+    id     The 8-bit value for this enumerated element.
+    -->
+<!ELEMENT enum-element (name)>
+<!ATTLIST enum-element id %Uint8; #REQUIRED>
+
+<!--
+    Command element.
+
+    id          Unique 8-bit ID for the attribute.
+
+    length      Length, in bytes, of a multi-byte command.
+                This only needs to be specified if this command
+                is the first byte of a multi-byte command.
+                May be omitted for single-byte command or
+                subsequent bytes of multi-byte commands.
+-->
+<!ELEMENT cmd (name, ((min, max) | enum))>
+<!ATTLIST cmd id %Uint8; #REQUIRED>
+<!ATTLIST cmd length %Uint8; #IMPLIED>

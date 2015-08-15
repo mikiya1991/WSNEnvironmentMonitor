@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE mis SYSTEM "fp-mis_1_4.dtd">
+    <!-- Copyright : National Instruments 2011.  All Rights Reserved.  -->
+    <!-- Access    : By NI EULA Only, otherwise Company Confidential        -->
+    <!-- MIS is made from several CIS -->
+<mis version="0x40" hotswap-id="0x62" module-id="0x0162" semaphore-time="20" architecture="scrimmage">
+    <name>NI WSN-3202</name>
+    <!-- =====================================================      IO Specific Channels    ======================================================= -->
+    <!-- 4 AI Voltage channels -->
+    <cis type="ai" id="0x6200" reps="4" points="1" lvprop="config">
+        <name>AI</name>
+        <depth>2</depth>
+        <range unit="0x04" id="0x03" type="f32">
+            <low>-10</low>
+            <high>+10</high>
+        </range>
+        <range unit="0x04" id="0x05" type="f32">
+            <low>-5</low>
+            <high>+5</high>
+        </range>
+        <range unit="0x04" id="0x82" type="f32">
+            <low>-2</low>
+            <high>+2</high>
+        </range>
+        <range unit="0x04" id="0x83" type="f32">
+            <low>-0.500</low>
+            <high>+0.500</high>
+        </range>
+        <attr type="enum" id="0x04">
+            <name>Sensor Power</name>
+            <enum>
+                <enum-element id="1">
+                    <name>0ms Before Sampling</name>
+                </enum-element>
+                <enum-element id="2">
+                    <name>25ms Before Sampling</name>
+                </enum-element>
+                <enum-element id="3">
+                    <name>100ms Before Sampling</name>
+                </enum-element>
+                <enum-element id="4">
+                    <name>250ms Before Sampling</name>
+                </enum-element>
+                <enum-element id="0xFE">
+                    <name>Always On</name>
+                </enum-element>
+            </enum>
+            <default>1</default>
+        </attr>
+    </cis>
+    <!-- 4 DIO channels  (DI is always valid.  DO may be ignored depending on the DIO Drive Mode)-->
+    <cis id="0x6101" points="1" reps="4" type="di">
+        <name>__config__DI</name>
+        <depth>2</depth>
+        <range unit="0" id="0x10" type="u8">
+            <low>0</low>
+            <high>1</high>
+            <default>0</default>
+        </range>
+    </cis>
+    <cis id="0x6102" points="1" reps="4" type="do" lvprop="config">
+        <name>DIO</name>
+        <depth>2</depth>
+        <range unit="0" id="0x10" type="u8">
+            <low>0</low>
+            <high>1</high>
+            <default>0</default>
+        </range>
+        <attr type="enum" id="0x20">
+            <name>DIO Drive Mode</name>
+            <enum>
+                <enum-element id="0">
+                    <name>Tristate</name>
+                </enum-element>
+                <enum-element id="1">
+                    <name>Drive Low Only</name>
+                </enum-element>
+                <enum-element id="2">
+                    <name>Drive High Only</name>
+                </enum-element>
+                <enum-element id="3">
+                    <name>Drive High and Low</name>
+                </enum-element>
+            </enum>
+            <default>0</default>
+        </attr>
+    </cis>
+    <!-- =====================================================           WSN Common Channels           All WSN Nodes share the following channels.           IMPORTANT!!! - This channels must remain at the end           of the MIS.  New channels are added to the top. The           bluebus driver relies on this ordering to locate           node configuration information. ======================================================= -->
+    <!-- Sample Rate in Seconds-->
+    <cis type="ao" id="0x6300" reps="1" points="1" lvprop="channel">
+        <name>__config__Sample Interval</name>
+        <depth>1</depth>
+        <relaxedTimeStamp>1</relaxedTimeStamp>
+        <range unit="0x08" id="0x81" type="f32">
+            <low>0.1</low>
+            <high>100000.0</high>
+            <default>5</default>
+        </range>
+    </cis>
+    <!-- The Heartbeat Rate in Seconds-->
+    <cis type="ao" id="0x6301" reps="1" points="1">
+        <name>__config__Heartbeat</name>
+        <depth>1</depth>
+        <relaxedTimeStamp>1</relaxedTimeStamp>
+        <range unit="0x08" id="0x81" type="f32">
+            <low>0.1</low>
+            <high>90.0</high>
+            <default>61</default>
+        </range>
+    </cis>
+    <!-- The battery level is sent as a normal AI channel back to LV Host-->
+    <cis type="ai" id="0x6302" reps="1" points="1">
+        <name>Battery Voltage</name>
+        <depth>2</depth>
+        <relaxedTimeStamp>1</relaxedTimeStamp>
+        <range unit="0x04" id="0x04" type="f32">
+            <low>0</low>
+            <high>10</high>
+        </range>
+    </cis>
+    <!-- The Link Quality is sent as a normal AI channel back to LV Host-->
+    <cis type="ai" id="0x6303" reps="1" points="1">
+        <name>Link Quality</name>
+        <depth>2</depth>
+        <relaxedTimeStamp>1</relaxedTimeStamp>
+        <range unit="0x0E" id="0x38" type="f32">
+            <low>0</low>
+            <high>100</high>
+        </range>
+    </cis>
+    <!-- "VI on the Node" indicates whether the node is running LV.  It is a normal Digital Input channel.-->
+    <cis id="0x6304" points="1" reps="1" type="di">
+        <name>VI Deployed</name>
+        <depth>2</depth>
+        <relaxedTimeStamp>1</relaxedTimeStamp>
+        <range unit="0" id="0x10" type="u8">
+            <low>0</low>
+            <high>1</high>
+            <default>0</default>
+        </range>
+    </cis>
+    <!-- "External Power" indicates whether the node is running on external power or batteries.  It is a normal Digital Input channel.-->
+    <cis id="0x6305" points="1" reps="1" type="di">
+        <name>External Power</name>
+        <depth>2</depth>
+        <relaxedTimeStamp>1</relaxedTimeStamp>
+        <range unit="0" id="0x10" type="u8">
+            <low>0</low>
+            <high>1</high>
+            <default>0</default>
+        </range>
+    </cis>
+    <!-- "Mesh Router" indicates whether the node is using routing firmware or end node firmware in the radio.  It is a normal Digital Input channel.-->
+    <cis id="0x6306" points="1" reps="1" type="di">
+        <name>Mesh Router</name>
+        <depth>2</depth>
+        <relaxedTimeStamp>1</relaxedTimeStamp>
+        <range unit="0" id="0x10" type="u8">
+            <low>0</low>
+            <high>1</high>
+            <default>0</default>
+        </range>
+    </cis>
+    <!-- User Defined Variables -->
+
+</mis>
